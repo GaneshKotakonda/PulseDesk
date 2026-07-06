@@ -1,7 +1,12 @@
+
+<!--whole screen into left and right -->
+
+
 <div class="flex">
 
 <div class="w-64 h-screen bg-[#082C4A] text-white flex flex-col">
 
+<!--sidebar -->
 
     <div class="flex items-center gap-3">
         <img src="/logo.png" class="w-40 h-26" alt="logo">
@@ -9,7 +14,8 @@
     </div>
 
 
-   
+
+
     <nav class="flex flex-col mt-2">
 
         <a (click)="selected='dashboard'" class="flex items-center border-white rounded gap-3 px-5 py-3 mx-4 hover:bg-blue-700">
@@ -68,20 +74,61 @@
 
     </nav>
 
-
- 
-
 </div>
+
+<!--side section starts here -->
+
 <div class="bg-blue-50 w-full h-screen">
+  <!--welcome things -->
 <div *ngIf="selected === 'dashboard'" class="mx-[3%] mt-[2%]">
         <p class="font-semibold text-black text-3xl">Welcome Back!</p>
         <p class="text-gray-600 mt-2">here's whats happening in your hospital</p>
-        <div class="bg-white ">
-            <p class="text-blue-400">Total Patients</p>
-            <p>{{num}}</p>
+
+        <div> <!--graphs and counts in same div -->
+ <div class="flex "> <!--counts div -->
+ <div class="bg-white border-white rounded-md h-[60] w-[30%] mt-6 mr-4 flex justify-between">
+          <div>
+
+            <p class="text-blue-400 text-xl pl-6 mr-4 pt-6">Total Patients</p>
+            <p class="text-blue-500 pb-12 pt-6 pl-6 text-3xl">{{patientCount()}} </p>
+          </div>
+          <div>
+
+            <i class="fa-solid fa-users text-blue-500 pt-10 mr-20 text-6xl" ></i>
+          </div>
         </div>
+        <div class="rounded-md bg-white h-[60] w-[30%] mt-6 mr-4 flex justify-between">
+          <div>
 
+            <p class="text-green-500 text-xl pl-6 mr-4 pt-6">Total Appointments</p>
+            <p class="text-green-500 pb-12 pt-6 pl-6 text-3xl">{{AppointmentCount()}} </p>
+          </div>
+          <div>
 
+            <i class="fa-solid fa-calendar-days text-green-500 pt-10 mr-20 text-6xl"></i>
+          </div>
+        </div>
+         <div class="rounded-md bg-white h-[60] w-[30%] mt-6 mr-4 flex justify-between">
+          <div>
+
+            <p class="text-yellow-500 text-xl pl-6 mr-4 pt-6">Total Doctors</p>
+            <p class="text-yellow-500 pb-12 pt-6 pl-6 text-3xl">{{doctorsCount()}} </p>
+          </div>
+          <div>
+
+            <i class="fa-solid fa-calendar-days text-yellow-500 pt-10 mr-20 text-6xl"></i>
+          </div>
+        </div>
+        
+        </div>  
+        <div > <!--div for keepings graphs and recent appointments -->
+          <div class="bg-white rounded-lg shadow p-6 mt-6 w-[40%]">
+  <h2 class="text-xl ml-1 mb-4">Appointments Overview</h2>
+
+  <canvas id="appointmentsChart"></canvas>
+</div>
+        </div>     
+</div>
 </div>
 </div>
 </div>

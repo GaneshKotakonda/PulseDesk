@@ -15,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Angular", policy =>
+
     {
         policy.AllowAnyOrigin()
               .AllowAnyHeader()
@@ -23,12 +24,15 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+app.UseSwagger();
+app.UseSwaggerUI();
 }
 
 app.UseCors("Angular");
