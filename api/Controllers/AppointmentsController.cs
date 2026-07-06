@@ -48,12 +48,13 @@ namespace api.Controllers
         public async Task<IActionResult> GetRecentAppointments()
         {
             var appointments = await _context.Appointments
-            .Include(a=>a.Patient)
-            .Include(a=>a.Doctor)
-            .OrderByDescending(a=>a.AppointmentDate)
-            .Take(5)
-            .ToListAsync();
-            return Ok(appointments);
+    .Include(a => a.Patient)
+    .Include(a => a.Doctor)
+    .OrderByDescending(a => a.AppointmentDate)
+    .Take(5)
+    .ToListAsync();
+
+return Ok(appointments);
         }
     }
 }

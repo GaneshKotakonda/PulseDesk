@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,13 +6,15 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../../app/firebase';
 import { HttpClient } from '@angular/common/http';
 import { Chart } from 'chart.js/auto';
+import { PatientsComp } from '../patients-comp/patients-comp';
 @Component({
   selector: 'app-dashboard',
-  imports: [FormsModule,NgIf,],
+  imports: [FormsModule, NgIf, NgFor, NgClass,PatientsComp],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
+  recentAppointments: any[] = [];
   patientCount=signal(0);
   AppointmentCount=signal(0);
   doctorsCount= signal(0);
@@ -40,7 +42,17 @@ ngAfterViewInit() {
   });
 }
 ngOnInit(){
-
+//recent appointments
+    this.http.get<any[]>('http://localhost:5132/api/appointments/recent')
+    .subscribe({
+      next: data=>{
+        this.recentAppointments=data;
+      },
+      error: err=>{
+        console.log('Recent appointments error:', err);
+      }
+    });
+//doctors count
  this.http.get<number>('http://localhost:5132/api/doctors/count')
 .subscribe({
   next:(count)=>{
@@ -54,12 +66,11 @@ console.log(err);
 
     }
 });
-
+//appointments count;
 this.http.get<number>('http://localhost:5132/api/appointments/count')
 .subscribe({
   next:(count)=>{
-          this.AppointmentCount.set(count);
-
+    this.AppointmentCount.set(count);
   },
   error:(err:any)=>{
 
@@ -67,6 +78,7 @@ console.log(err);
 
     }
 });
+//patients count;
 this.http.get<number>('http://localhost:5132/api/patients/count')
 .subscribe({ 
     next: (count:any)=>{

@@ -1,0 +1,83 @@
+<div class="mx-[3%] mt-[2%]">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+
+        <div>
+            <h1 class="text-3xl font-semibold">Patients</h1>
+            <p class="text-gray-500 mt-2">
+                Search, add, edit, and manage patient records.
+            </p>
+        </div>
+
+        <button
+            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
+            <i class="fa-solid fa-plus mr-2"></i>
+            Add Patient
+        </button>
+
+    </div>
+
+    <!-- Search -->
+    <div class="relative w-96 mt-8">
+
+        <input
+            type="text"
+            placeholder="Search patients..."
+            class="w-full border rounded-lg py-3 pl-10 pr-4 outline-none focus:ring-2 focus:ring-blue-500">
+
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+
+    </div>
+
+    <!-- List -->
+    <div class="bg-white rounded-xl shadow mt-8">
+
+        <!-- Heading -->
+        <div class="grid grid-cols-6 px-6 py-4 font-semibold border-b text-gray-600">
+
+            <div>ID</div>
+            <div>Name</div>
+            <div>Gender</div>
+            <div>Phone</div>
+            <div>Age</div>
+            <div class="text-center">Actions</div>
+
+        </div>
+
+        <!-- Data -->
+        <div
+            *ngFor="let patient of patients"
+            class="grid grid-cols-6 px-6 py-5 border-b items-center hover:bg-gray-50">
+
+            <div>{{patient.id}}</div>
+
+            <div>{{patient.name}}</div>
+
+            <div>{{patient.gender}}</div>
+
+            <div>{{patient.phone}}</div>
+
+            <div>{{patient.age}}</div>
+
+            <div class="flex justify-center gap-5">
+
+                <button class="text-blue-500 hover:text-blue-700">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button class="text-green-500 hover:text-green-700">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button class="text-red-500 hover:text-red-700">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

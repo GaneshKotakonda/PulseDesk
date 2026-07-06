@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../app/firebase';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-sign-up',
   imports: [FormsModule],
@@ -12,17 +13,31 @@ import { auth } from '../../app/firebase';
 export class SignUp {
   email =''
   password = ''
- constructor(private router: Router) {}
+  phone='';
+  name ='';
+ constructor(private router: Router,private http :HttpClient) {}
+ 
 signUp(){
-createUserWithEmailAndPassword( auth,this.email,this.password ).then((UserCredential)=>{
-console.log("userCreated",UserCredential.user);
-  this.router.navigate(['/dashboard'])
+createUserWithEmailAndPassword(auth, this.email, this.password)
+  .then((userCredential) => {
 
-}).catch((error) => {
-      console.error(error);
-      alert(error.message);
-    });
+      // Firebase account created successfully
 
+      this.http.post('http://localhost:5132/api/users', {
+          fullName: this.name,
+          email: this.email,
+          phoneNumber: this.phone
+      }).subscribe(() => {
+
+          // User added to your SQL database
+          this.router.navigate(['/dashboard']);
+
+      });
+
+  })
+  .catch(err => {
+      console.log(err);
+  });
 }
 Login(){
   this.router.navigate(['/'])
