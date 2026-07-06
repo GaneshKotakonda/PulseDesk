@@ -4,16 +4,16 @@
     <div class="flex justify-between items-center">
 
         <div>
-            <h1 class="text-3xl font-semibold">Patients</h1>
+            <h1 class="text-3xl font-semibold">Doctors</h1>
             <p class="text-gray-500 mt-2">
-                Search, add, edit, and manage patient records.
+                Search, add, edit, and manage doctor records.
             </p>
         </div>
 
         <button
             class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
             <i class="fa-solid fa-plus mr-2"></i>
-            Add Patient
+            Add Doctor
         </button>
 
     </div>
@@ -23,14 +23,14 @@
 
         <input
             type="text"
-            placeholder="Search patients..."
+            placeholder="Search doctors..."
             class="w-full border border-gray-300 rounded-lg py-3 pl-10 pr-4 outline-none focus:ring-2 focus:ring-blue-500">
 
         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
 
     </div>
 
-    <!-- Patients List -->
+    <!-- Doctors List -->
     <div class="bg-white rounded-xl shadow mt-8 overflow-hidden">
 
         <!-- Heading Row -->
@@ -38,36 +38,36 @@
 
             <div>ID</div>
             <div>Name</div>
-            <div>Gender</div>
+            <div>Specialization</div>
             <div>Phone</div>
-            <div>Age</div>
+            <div>Email</div>
             <div class="text-center">Actions</div>
 
         </div>
 
         <!-- Data Rows -->
         <div
-            *ngFor="let patient of patients()"
+            *ngFor="let doctor of doctors()"
             class="grid grid-cols-6 px-6 py-5 border-b border-gray-200 items-center hover:bg-gray-50">
 
             <div>
-                P{{ patient.id }}
+                D{{ doctor.id }}
             </div>
 
             <div>
-                {{ patient.name }}
+                {{ doctor.name }}
             </div>
 
             <div>
-                {{ patient.gender }}
+                {{ doctor.specialization }}
             </div>
 
             <div>
-                {{ patient.phone }}
+                {{ doctor.phone }}
             </div>
 
             <div>
-                {{ patient.age }}
+                {{ doctor.email }}
             </div>
 
             <div class="flex justify-center gap-5">
@@ -93,18 +93,9 @@
     <!-- Footer / Pagination -->
     <div class="flex justify-between items-center mt-4 text-gray-500 text-sm">
 
-        <p>
-            Showing 1 to {{ patients().length }} of {{ patients().length }} entries
-        </p>
+       
 
-        <div class="flex gap-2">
-            <button class="px-3 py-2 border rounded hover:bg-gray-100">1</button>
-            <button class="px-3 py-2 border rounded hover:bg-gray-100">2</button>
-            <button class="px-3 py-2 border rounded hover:bg-gray-100">3</button>
-            <button class="px-3 py-2 border rounded hover:bg-gray-100">
-                <i class="fa-solid fa-angle-right"></i>
-            </button>
-        </div>
+      
 
     </div>
 

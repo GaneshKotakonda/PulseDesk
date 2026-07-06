@@ -7,9 +7,11 @@ import { auth } from '../../app/firebase';
 import { HttpClient } from '@angular/common/http';
 import { Chart } from 'chart.js/auto';
 import { PatientsComp } from '../patients-comp/patients-comp';
+import { DoctorsComp } from '../doctors-comp/doctors-comp';
+import { AppointmentComp } from '../appointment-comp/appointment-comp';
 @Component({
   selector: 'app-dashboard',
-  imports: [FormsModule, NgIf, NgFor, NgClass,PatientsComp],
+  imports: [FormsModule, NgIf, NgFor, NgClass,PatientsComp,DoctorsComp,AppointmentComp],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

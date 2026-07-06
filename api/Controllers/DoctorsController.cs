@@ -1,7 +1,7 @@
 using api.Data;
+using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 namespace api.Controllers;
 
 [ApiController]
@@ -14,7 +14,12 @@ public class DoctorsController : ControllerBase
     {
         _context = context;
     }
-
+    [HttpGet]
+public async Task<IActionResult> GetAllDoctors()
+{
+    var doctors = await _context.Doctors.ToListAsync();
+    return Ok(doctors);
+}
     [HttpGet("count")]
     public async Task<IActionResult> GetDoctorsCount()
     {
