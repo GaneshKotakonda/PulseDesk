@@ -39,25 +39,33 @@ export class Billing {
   }
 
   getBills() {
-    this.http.get<any[]>(`${environment.apiUrl}/Bill`)
+    const apiUrl = `${environment.apiUrl}/Bill`;
+    console.log('Billing get API URL:', apiUrl);
+
+    this.http.get<any[]>(apiUrl)
       .subscribe({
         next: (data) => {
           this.bills.set(data);
         },
         error: (err) => {
-          console.log(err);
+          console.error('Billing list error:', err);
+          console.error('Billing list backend response:', err?.error);
         }
       });
   }
 
   getAppointments() {
-    this.http.get<any[]>(`${environment.apiUrl}/appointments`)
+    const apiUrl = `${environment.apiUrl}/appointments`;
+    console.log('Billing appointments API URL:', apiUrl);
+
+    this.http.get<any[]>(apiUrl)
       .subscribe({
         next: (data) => {
           this.appointments.set(data);
         },
         error: (err) => {
-          console.log('Billing appointments dropdown error:', err);
+          console.error('Billing appointments dropdown error:', err);
+          console.error('Billing appointments backend response:', err?.error);
         }
       });
   }
@@ -92,27 +100,54 @@ export class Billing {
   }
 
   saveBill() {
+    console.log('saveBill executed with selectedBill:', this.selectedBill);
+
     if (!this.selectedBill.appointmentId || !this.selectedBill.billDate) {
+      console.error('Bill validation failed: appointment and bill date are required.', this.selectedBill);
+      return;
+    }
+
+    const appointmentId = Number(this.selectedBill.appointmentId);
+    const amount = Number(this.selectedBill.amount);
+    const billId = Number(this.selectedBill.id);
+
+    if (!Number.isFinite(appointmentId) || appointmentId <= 0) {
+      console.error('Bill validation failed: appointmentId is invalid.', this.selectedBill.appointmentId);
+      return;
+    }
+
+    if (this.isEditing() && (!Number.isFinite(billId) || billId <= 0)) {
+      console.error('Bill validation failed: bill id is invalid for edit.', this.selectedBill.id);
       return;
     }
 
     const payload = {
       ...this.selectedBill,
-      appointmentId: Number(this.selectedBill.appointmentId),
-      amount: Number(this.selectedBill.amount),
+      id: this.isAdding() ? 0 : billId,
+      appointmentId,
+      amount: Number.isFinite(amount) ? amount : 0,
     };
 
+    const apiUrl = this.isAdding()
+      ? `${environment.apiUrl}/Bill`
+      : `${environment.apiUrl}/Bill/${billId}`;
+
+    console.log('Bill save API URL:', apiUrl);
+    console.log('Bill save request body:', payload);
+
     const request = this.isAdding()
-      ? this.http.post<any>(`${environment.apiUrl}/Bill`, payload)
-      : this.http.put<any>(`${environment.apiUrl}/Bill/${this.selectedBill.id}`, payload);
+      ? this.http.post<any>(apiUrl, payload)
+      : this.http.put<any>(apiUrl, payload);
 
     request.subscribe({
-      next: () => {
+      next: (savedBill) => {
+        console.log('Bill save success:', savedBill);
         this.cancelForm();
         this.getBills();
       },
       error: (err) => {
-        console.log('Bill save error:', err);
+        console.error('Bill save error:', err);
+        console.error('Bill save backend response:', err?.error);
       }
     });
   }
