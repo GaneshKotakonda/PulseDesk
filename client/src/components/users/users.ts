@@ -88,7 +88,7 @@ export class Users {
       .subscribe({
         next: () => {
           this.getUsers();
-          this.isEditing.set(false);
+          this.cancelEdit();
         },
         error: (err) => {
           console.log('User update error:', err);

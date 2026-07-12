@@ -49,25 +49,33 @@ namespace api.Controllers
         }
 
     [HttpPost]
-    public async Task<IActionResult> AddBill([FromBody] Bill bill)
+    public async Task<IActionResult> AddBill(Bill bill)
         {
+            if (!await _context.Appointments.AnyAsync(a => a.Id == bill.AppointmentId))
+                return BadRequest("Selected appointment was not found.");
+
             bill.Appointment = null!;
+            bill.PaymentStatus = string.IsNullOrWhiteSpace(bill.PaymentStatus) ? "Pending" : bill.PaymentStatus;
+
             _context.Bills.Add(bill);
             await _context.SaveChangesAsync();
             return Ok(bill);
         }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateBill(int id, [FromBody] Bill bill)
+    public async Task<IActionResult> UpdateBill(int id, Bill bill)
         {
             var existingBill = await _context.Bills.FindAsync(id);
             if (existingBill == null)
                 return NotFound();
 
+            if (!await _context.Appointments.AnyAsync(a => a.Id == bill.AppointmentId))
+                return BadRequest("Selected appointment was not found.");
+
             existingBill.AppointmentId = bill.AppointmentId;
             existingBill.Amount = bill.Amount;
             existingBill.BillDate = bill.BillDate;
-            existingBill.PaymentStatus = bill.PaymentStatus;
+            existingBill.PaymentStatus = string.IsNullOrWhiteSpace(bill.PaymentStatus) ? "Pending" : bill.PaymentStatus;
 
             await _context.SaveChangesAsync();
             return Ok(existingBill);
