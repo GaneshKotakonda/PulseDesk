@@ -1,124 +1,202 @@
 <div class="mx-[3%] mt-[2%]">
 
-    <!-- Header -->
-    <div class="flex justify-between items-center">
+    <div *ngIf="!isAdding() && !isEditing()">
+        <!-- Header -->
+        <div class="flex justify-between items-center">
 
+            <div>
+                <h1 class="text-3xl font-semibold">Appointments</h1>
+                <p class="text-gray-500 mt-2">
+                    View and manage patient appointments.
+                </p>
+            </div>
+
+            <button
+                *ngIf="canManage()"
+                (click)="addAppointment()"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
+
+                <i class="fa-solid fa-plus mr-2"></i>
+                New Appointment
+
+            </button>
+
+        </div>
+
+        <!-- Appointment List -->
+
+        <div class="bg-white rounded-xl shadow mt-8 overflow-hidden">
+
+            <!-- Heading -->
+
+            <div
+                class="grid grid-cols-6 px-6 py-4 font-semibold border-b border-gray-300 text-gray-600">
+
+                <div>ID</div>
+                <div>Patient</div>
+                <div>Doctor</div>
+                <div>Date & Time</div>
+                <div>Status</div>
+                <div class="text-center">Actions</div>
+
+            </div>
+
+            <!-- Rows -->
+
+            <div class="max-h-[65vh] overflow-y-auto">
+                <div
+                    *ngFor="let appointment of appointments()"
+                    class="grid grid-cols-6 px-6 py-5 border-b border-gray-200 items-center hover:bg-gray-50">
+
+                    <div>
+                        A{{appointment.id}}
+                    </div>
+
+                    <div>
+                        {{appointment.patient?.name}}
+                    </div>
+
+                    <div>
+                        {{appointment.doctor?.name}}
+                    </div>
+
+                    <div>
+
+                        <div>
+                            {{appointment.appointmentDate | date:'dd MMM yyyy'}}
+                        </div>
+
+                        <div class="text-sm text-gray-500">
+                            {{appointment.appointmentTime}}
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <span
+                            class="px-3 py-1 rounded-full text-sm font-medium"
+
+                            [ngClass]="{
+
+                                'bg-blue-100 text-blue-600': appointment.status=='Scheduled',
+
+                                'bg-green-100 text-green-600': appointment.status=='Completed',
+
+                                'bg-red-100 text-red-600': appointment.status=='Cancelled',
+
+                                'bg-yellow-100 text-yellow-600': appointment.status=='Pending'
+
+                            }">
+
+                            {{appointment.status}}
+
+                        </span>
+
+                    </div>
+
+                    <div class="flex justify-center gap-5">
+
+                        <button *ngIf="canManage()" (click)="editAppointment(appointment)" class="text-blue-600 hover:text-blue-800">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        <button *ngIf="canManage()" (click)="deleteAppointment(appointment.id)" class="text-red-500 hover:text-red-700">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+
+        <div class="flex justify-between items-center mt-4 text-gray-500 text-sm">
+
+            <p>
+                Showing {{appointments().length}} appointments
+            </p>
+
+        </div>
+    </div>
+
+    <div *ngIf="isAdding() || isEditing()">
         <div>
-            <h1 class="text-3xl font-semibold">Appointments</h1>
+            <h1 class="text-3xl font-semibold">{{ isAdding() ? 'New Appointment' : 'Edit Appointment' }}</h1>
             <p class="text-gray-500 mt-2">
-                View and manage patient appointments.
+                {{ isAdding() ? 'Create patient appointment.' : 'Update patient appointment.' }}
             </p>
         </div>
 
-        <button
-            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
-
-            <i class="fa-solid fa-plus mr-2"></i>
-            New Appointment
-
-        </button>
-
-    </div>
-
-    <!-- Appointment List -->
-
-    <div class="bg-white rounded-xl shadow mt-8 overflow-hidden">
-
-        <!-- Heading -->
-
-        <div
-            class="grid grid-cols-6 px-6 py-4 font-semibold border-b border-gray-300 text-gray-600">
-
-            <div>ID</div>
-            <div>Patient</div>
-            <div>Doctor</div>
-            <div>Date & Time</div>
-            <div>Status</div>
-            <div class="text-center">Actions</div>
-
-        </div>
-
-        <!-- Rows -->
-
-        <div
-            *ngFor="let appointment of appointments()"
-            class="grid grid-cols-6 px-6 py-5 border-b border-gray-200 items-center hover:bg-gray-50">
-
-            <div>
-                A{{appointment.id}}
-            </div>
-
-            <div>
-                {{appointment.patient.name}}
-            </div>
-
-            <div>
-                {{appointment.doctor.name}}
-            </div>
-
-            <div>
+        <div class="bg-white rounded-xl shadow mt-8 p-6">
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-gray-600 mb-2">Patient</label>
+                    <select [(ngModel)]="selectedAppointment.patientId" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select Patient</option>
+                        <option *ngFor="let patient of patients()" [value]="patient.id">{{ patient.name }}</option>
+                    </select>
+                </div>
 
                 <div>
-                    {{appointment.appointmentDate | date:'dd MMM yyyy'}}
+                    <label class="block text-gray-600 mb-2">Doctor</label>
+                    <select [(ngModel)]="selectedAppointment.doctorId" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select Doctor</option>
+                        <option *ngFor="let doctor of doctors()" [value]="doctor.id">{{ doctor.name }}</option>
+                    </select>
                 </div>
 
-                <div class="text-sm text-gray-500">
-                    {{appointment.appointmentTime}}
+                <div>
+                    <label class="block text-gray-600 mb-2">Appointment Date</label>
+                    <input type="date" [(ngModel)]="selectedAppointment.appointmentDate" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
+                <div>
+                    <label class="block text-gray-600 mb-2">Appointment Time</label>
+                    <input type="time" [(ngModel)]="selectedAppointment.appointmentTime" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 mb-2">Appointment Type</label>
+                    <input type="text" [(ngModel)]="selectedAppointment.appointmentType" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 mb-2">Duration Minutes</label>
+                    <input type="number" [(ngModel)]="selectedAppointment.durationMinutes" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 mb-2">Status</label>
+                    <select [(ngModel)]="selectedAppointment.status" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                        <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 mb-2">Reason For Visit</label>
+                    <input type="text" [(ngModel)]="selectedAppointment.reasonForVisit" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="col-span-2">
+                    <label class="block text-gray-600 mb-2">Notes</label>
+                    <input type="text" [(ngModel)]="selectedAppointment.notes" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
             </div>
 
-            <div>
+            <div class="flex justify-end gap-4 mt-8">
+                <button (click)="cancelForm()" class="border border-gray-300 text-gray-600 px-5 py-3 rounded-lg hover:bg-gray-100">
+                    Cancel
+                </button>
 
-                <span
-                    class="px-3 py-1 rounded-full text-sm font-medium"
-
-                    [ngClass]="{
-
-                        'bg-blue-100 text-blue-600': appointment.status=='Scheduled',
-
-                        'bg-green-100 text-green-600': appointment.status=='Completed',
-
-                        'bg-red-100 text-red-600': appointment.status=='Cancelled',
-
-                        'bg-yellow-100 text-yellow-600': appointment.status=='Pending'
-
-                    }">
-
-                    {{appointment.status}}
-
-                </span>
-
+                <button (click)="saveAppointment()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
+                    Save
+                </button>
             </div>
-
-            <div class="flex justify-center gap-5">
-
-                <button class="text-blue-500 hover:text-blue-700">
-                    <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <button class="text-blue-600 hover:text-blue-800">
-                    <i class="fa-solid fa-pen"></i>
-                </button>
-
-                <button class="text-red-500 hover:text-red-700">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-
-            </div>
-
         </div>
-
-    </div>
-
-    <!-- Footer -->
-
-    <div class="flex justify-between items-center mt-4 text-gray-500 text-sm">
-
-        <p>
-            Showing {{appointments().length}} appointments
-        </p>
-
     </div>
 
 </div>

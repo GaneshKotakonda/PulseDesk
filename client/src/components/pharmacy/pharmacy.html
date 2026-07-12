@@ -1,0 +1,126 @@
+<div class="mx-[3%] mt-[2%]">
+
+    <div *ngIf="!isAdding() && !isEditing()">
+        <div class="flex justify-between items-center">
+
+            <div>
+                <h1 class="text-3xl font-semibold">Pharmacy</h1>
+                <p class="text-gray-500 mt-2">
+                    View and manage medicines.
+                </p>
+            </div>
+
+            <button *ngIf="canManage()" (click)="addMedicine()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
+                <i class="fa-solid fa-plus mr-2"></i>
+                Add Medicine
+            </button>
+
+        </div>
+
+        <div class="relative w-96 mt-8">
+            <input
+                type="text"
+                placeholder="Search medicines..."
+                class="w-full border border-gray-300 rounded-lg py-3 pl-10 pr-4 outline-none focus:ring-2 focus:ring-blue-500">
+
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
+
+        <div class="bg-white rounded-xl shadow mt-8 overflow-hidden">
+
+            <div class="grid grid-cols-6 px-6 py-4 font-semibold border-b border-gray-300 text-gray-600">
+                <div>ID</div>
+                <div>Medicine Name</div>
+                <div>Category</div>
+                <div>Stock</div>
+                <div>Price</div>
+                <div class="text-center">Actions</div>
+            </div>
+
+            <div *ngIf="isLoading()" class="px-6 py-8 text-center text-gray-500">
+                Loading medicines...
+            </div>
+
+            <div *ngIf="!isLoading() && errorMessage()" class="px-6 py-8 text-center text-red-500">
+                {{ errorMessage() }}
+            </div>
+
+            <div *ngIf="!isLoading() && !errorMessage() && medicines().length === 0" class="px-6 py-8 text-center text-gray-500">
+                No medicines found.
+            </div>
+
+            <div *ngIf="!isLoading() && !errorMessage()" class="max-h-[65vh] overflow-y-auto">
+                <div
+                    *ngFor="let medicine of medicines()"
+                    class="grid grid-cols-6 px-6 py-5 border-b border-gray-200 items-center hover:bg-gray-50">
+
+                    <div>M{{ medicine.id }}</div>
+                    <div>{{ medicine.name }}</div>
+                    <div>{{ medicine.category }}</div>
+                    <div>{{ medicine.stock }}</div>
+                    <div>₹{{ medicine.price }}</div>
+
+                    <div class="flex justify-center gap-5">
+                        <button *ngIf="canManage()" (click)="editMedicine(medicine)" class="text-blue-600 hover:text-blue-800">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        <button *ngIf="canManage()" (click)="deleteMedicine(medicine.id)" class="text-red-500 hover:text-red-700">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center mt-4 text-gray-500 text-sm">
+            <p>Showing {{ medicines().length }} medicines</p>
+        </div>
+    </div>
+
+    <div *ngIf="isAdding() || isEditing()">
+        <div>
+            <h1 class="text-3xl font-semibold">{{ isAdding() ? 'Add Medicine' : 'Edit Medicine' }}</h1>
+            <p class="text-gray-500 mt-2">
+                {{ isAdding() ? 'Create medicine record.' : 'Update medicine record.' }}
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow mt-8 p-6">
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-gray-600 mb-2">MedicineName</label>
+                    <input type="text" [(ngModel)]="selectedMedicine.name" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 mb-2">Category</label>
+                    <input type="text" [(ngModel)]="selectedMedicine.category" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 mb-2">Stock</label>
+                    <input type="number" [(ngModel)]="selectedMedicine.stock" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 mb-2">Price</label>
+                    <input type="number" [(ngModel)]="selectedMedicine.price" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-4 mt-8">
+                <button (click)="cancelForm()" class="border border-gray-300 text-gray-600 px-5 py-3 rounded-lg hover:bg-gray-100">
+                    Cancel
+                </button>
+
+                <button (click)="saveMedicine()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>

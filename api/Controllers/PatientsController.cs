@@ -37,7 +37,7 @@ public PatientsController(AppDbContext context)
     [HttpPost]
     public async Task<IActionResult> AddPatient(Patient patient)
     {
-_context.Patients.Add(patient);
+ _context.Patients.Add(patient);
 await _context.SaveChangesAsync();
 
 return Ok(patient); 
@@ -68,7 +68,7 @@ return Ok(patient);
         if (patient == null)
     return NotFound();
     _context.Patients.Remove(patient);
-    _context.SaveChangesAsync();
+    await _context.SaveChangesAsync();
     return Ok();
 
     }

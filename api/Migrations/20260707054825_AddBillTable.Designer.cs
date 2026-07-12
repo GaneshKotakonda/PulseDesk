@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260707054825_AddBillTable")]
+    partial class AddBillTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,61 +24,6 @@ namespace api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
-
-            modelBuilder.Entity("Bill", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int>("AppointmentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("BillDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("PaymentStatus")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppointmentId");
-
-                    b.ToTable("Bills");
-                });
-
-            modelBuilder.Entity("Medicine", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Medicines");
-                });
 
             modelBuilder.Entity("api.Models.Appointment", b =>
                 {
@@ -219,17 +167,6 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Bill", b =>
-                {
-                    b.HasOne("api.Models.Appointment", "Appointment")
-                        .WithMany()
-                        .HasForeignKey("AppointmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Appointment");
                 });
 
             modelBuilder.Entity("api.Models.Appointment", b =>

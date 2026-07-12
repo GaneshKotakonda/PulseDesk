@@ -4,7 +4,7 @@
 
 <div class="flex">
 
-<div class="w-64 h-screen bg-[#082C4A] text-white flex flex-col">
+    <div class="w-64 h-screen bg-[#082C4A] text-white flex flex-col">
 
 <!--sidebar -->
 
@@ -22,51 +22,46 @@
           <i class="fa-solid fa-house"></i> Dashboard
         </a>
 
-        <a (click)="selected='patients'" class="flex items-center gap-3 px-5 py-3 border-white rounded hover:bg-blue-700 mx-4 active:bg-blue-700  ">
+        <a *ngIf="canShowPatients()" (click)="selected='patients'" class="flex items-center gap-3 px-5 py-3 border-white rounded hover:bg-blue-700 mx-4 active:bg-blue-700  ">
 
            <i class="fa-solid fa-user-injured"></i>
- patients
+            patients
         </a>
 
-        <a (click)="selected='doctors'" class="flex items-center gap-3 px-5 py-3 mx-4 border-white rounded hover:bg-blue-700">
+        <a *ngIf="canShowDoctors()" (click)="selected='doctors'" class="flex items-center gap-3 px-5 py-3 mx-4 border-white rounded hover:bg-blue-700">
 
           <i class="fa-solid fa-user-doctor"></i>
-  doctors
+            doctors
         </a>
 
         <a (click)="selected='Appointments'" class="flex items-center border-white rounded gap-3 px-5 py-3 mx-4 hover:bg-blue-700">
           <i class="fa-solid fa-calendar-days"></i>
-  Appointments
+          Appointments
         </a>
 
-        <a (click)="selected='Billing'" class="flex items-center gap-3 px-5 py-3 border-white rounded hover:bg-blue-700 mx-4 active:bg-blue-700  ">
+        <a *ngIf="canShowBilling()" (click)="selected='Billing'" class="flex items-center gap-3 px-5 py-3 border-white rounded hover:bg-blue-700 mx-4 active:bg-blue-700  ">
 
           <i class="fa-solid fa-file-invoice-dollar"></i>
-  Billing
+            Billing
         </a>
 
-        <a (click)="selected='pharmacy'"  class="flex items-center gap-3 px-5 py-3 mx-4 border-white rounded hover:bg-blue-700">
+        <a *ngIf="canShowPharmacy()" (click)="selected='pharmacy'"  class="flex items-center gap-3 px-5 py-3 mx-4 border-white rounded hover:bg-blue-700">
 
           <i class="fa-solid fa-pills"></i>
-  pharmacy
+            pharmacy
         </a>
 
-        <a (click)="selected='Reports'" class="flex items-center border-white rounded gap-3 px-5 py-3 mx-4 hover:bg-blue-700">
-          <i class="fa-solid fa-chart-line"></i>
-  Reports
-        </a>
-
-        <a (click)="selected='Users'" class="flex items-center gap-3 px-5 py-3 border-white rounded hover:bg-blue-700 mx-4 active:bg-blue-700  ">
+        <a *ngIf="isAdmin()" (click)="selected='Users'" class="flex items-center gap-3 px-5 py-3 border-white rounded hover:bg-blue-700 mx-4 active:bg-blue-700  ">
 
           <i class="fa-solid fa-users"></i>
-  Users
+            Users
         </a>
 
-        <a (click)="selected='settings'" class="flex items-center gap-3 px-5 py-3 mx-4 border-white rounded hover:bg-blue-700">
+       <!-- <a *ngIf="isAdmin()" (click)="selected='settings'" class="flex items-center gap-3 px-5 py-3 mx-4 border-white rounded hover:bg-blue-700">
 
            <i class="fa-solid fa-gear"></i>
- settings
-        </a>
+            settings
+        </a>-->
         <a (click)="logout()" class="flex items-center gap-3 px-5 py-3 mx-4 border-white rounded hover:bg-blue-700">
 
            <i class="fa-solid fa-right-from-bracket"></i> Logout
@@ -133,49 +128,50 @@
 <div class="flex justify-between  pb-4">
   <h1 class="text-xl font-semibold text-gray-600" >Patient</h1>   <h1 class="text-xl font-semibold text-gray-600">Doctor</h1>   <h1 class="text-xl font-semibold text-gray-600">Date&Time</h1>   <h1 class="text-xl font-semibold text-gray-600">Status</h1> 
 </div>
-  <div class="flex justify-between border-b border-gray-300 pb-6 pt-6" *ngFor="let appointment of recentAppointments">
-    <h1>{{appointment.patient.name}}</h1>
-    <h1>{{appointment.doctor.name}}</h1>
+  <div class="flex justify-between border-b border-gray-300 pb-6 pt-6" *ngFor="let appointment of recentAppointments()">
+    <h1>{{appointment.patient?.name}}</h1>
+    <h1>{{appointment.doctor?.name}}</h1>
     <h1>{{appointment.appointmentDate}}</h1>
     <h1
       class="rounded-md px-4 py-1 font-semibold"
       [ngClass]="{
         'bg-blue-100 text-blue-600': appointment.status === 'Scheduled',
         'bg-green-100 text-green-600': appointment.status === 'Completed',
-        'bg-red-100 text-red-600': appointment.status === 'Cancelled'
+        'bg-red-100 text-red-600': appointment.status === 'Cancelled',
+        'bg-yellow-100 text-yellow-600': appointment.status === 'Pending'
       }"
     >
       {{appointment.status}}
     </h1>
 
 </div>
-<!-- <table >
-    <tr *ngFor="let appointment of recentAppointments">
 
-        <td>{{appointment.patient.name}}</td>
-
-        <td>{{appointment.doctor.name}}</td>
-
-        <td>{{appointment.appointmentDate}}</td>
-
-        <td>{{appointment.status}}</td>
-
-    </tr>
-</table> -->
 </div>
 
         </div>     
 </div>
 </div>
 
-<div *ngIf="selected === 'patients'" class="mx-[3%] mt-[2%]"> <!--patients-->
+<div *ngIf="selected === 'patients' && canShowPatients()" class="mx-[3%] mt-[2%]"> <!--patients-->
 <app-patients-comp></app-patients-comp>
 </div>
-<div *ngIf="selected === 'doctors'" class="mx-[3%] mt-[2%]"> <!--doctors-->
+<div *ngIf="selected === 'doctors' && canShowDoctors()" class="mx-[3%] mt-[2%]"> <!--doctors-->
 <app-doctors-comp></app-doctors-comp>
 </div>
 <div *ngIf="selected === 'Appointments'" class="mx-[3%] mt-[2%]">
 <app-appointment-comp></app-appointment-comp>
+</div>
+<div *ngIf="selected === 'Billing'" class="mx-[3%] mt-[2%]">
+
+  <app-billing></app-billing>
+</div>
+<div *ngIf="selected === 'pharmacy' && canShowPharmacy()" class="mx-[3%] mt-[2%]">
+
+  <app-pharmacy></app-pharmacy>
+</div>
+<div *ngIf="selected === 'Users' && isAdmin()" class="mx-[3%] mt-[2%]">
+
+  <app-users></app-users>
 </div>
 </div>
 </div>

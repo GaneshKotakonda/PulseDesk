@@ -1,0 +1,145 @@
+<div class="mx-[3%] mt-[2%]">
+
+    <div *ngIf="!isAdding() && !isEditing()">
+        <!-- Header -->
+        <div class="flex justify-between items-center">
+
+            <div>
+                <h1 class="text-3xl font-semibold">Billing</h1>
+                <p class="text-gray-500 mt-2">
+                    View and manage patient bills.
+                </p>
+            </div>
+
+            <button *ngIf="canManage()" (click)="addBill()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
+                <i class="fa-solid fa-plus mr-2"></i>
+                New Bill
+            </button>
+
+        </div>
+
+        <!-- Billing List -->
+        <div class="bg-white rounded-xl shadow mt-8 overflow-hidden">
+
+            <!-- Heading Row -->
+            <div class="grid grid-cols-6 px-6 py-4 font-semibold border-b border-gray-300 text-gray-600">
+
+                <div>ID</div>
+                <div>Patient</div>
+                <div>Bill Date</div>
+                <div>Amount</div>
+                <div>Payment Status</div>
+                <div class="text-center">Actions</div>
+
+            </div>
+
+            <!-- Data Rows -->
+            <div class="max-h-[65vh] overflow-y-auto">
+                <div
+                    *ngFor="let bill of bills()"
+                    class="grid grid-cols-6 px-6 py-5 border-b border-gray-200 items-center hover:bg-gray-50">
+
+                    <div>
+                        B{{ bill.id }}
+                    </div>
+
+                    <div>
+                        {{ bill.appointment?.patient?.name }}
+                    </div>
+
+                    <div>
+                        {{ bill.billDate | date:'dd MMM yyyy' }}
+                    </div>
+
+                    <div>
+                        ₹{{ bill.amount }}
+                    </div>
+
+                    <div>
+                        <span
+                            class="px-3 py-1 rounded-full text-sm font-medium"
+                            [ngClass]="{
+                                'bg-green-100 text-green-600': bill.paymentStatus === 'Paid',
+                                'bg-yellow-100 text-yellow-600': bill.paymentStatus === 'Pending',
+                                'bg-red-100 text-red-600': bill.paymentStatus === 'Cancelled'
+                            }">
+                            {{ bill.paymentStatus }}
+                        </span>
+                    </div>
+
+                    <div class="flex justify-center gap-5">
+
+                        <button *ngIf="canManage()" (click)="editBill(bill)" class="text-blue-600 hover:text-blue-800">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        <button *ngIf="canManage()" (click)="deleteBill(bill.id)" class="text-red-500 hover:text-red-700">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="flex justify-between items-center mt-4 text-gray-500 text-sm">
+            <p>
+                Showing {{ bills().length }} bills
+            </p>
+        </div>
+    </div>
+
+    <div *ngIf="isAdding() || isEditing()">
+        <div>
+            <h1 class="text-3xl font-semibold">{{ isAdding() ? 'New Bill' : 'Edit Bill' }}</h1>
+            <p class="text-gray-500 mt-2">
+                {{ isAdding() ? 'Create patient bill.' : 'Update patient bill.' }}
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow mt-8 p-6">
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-gray-600 mb-2">Appointment</label>
+                    <select [(ngModel)]="selectedBill.appointmentId" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select Appointment</option>
+                        <option *ngFor="let appointment of appointments()" [value]="appointment.id">
+                            {{ appointment.patient?.name }} - {{ appointment.doctor?.name }} - {{ appointment.appointmentDate | date:'dd MMM yyyy' }}
+                        </option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 mb-2">Amount</label>
+                    <input type="number" [(ngModel)]="selectedBill.amount" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 mb-2">Bill Date</label>
+                    <input type="date" [(ngModel)]="selectedBill.billDate" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 mb-2">Payment Status</label>
+                    <select [(ngModel)]="selectedBill.paymentStatus" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                        <option *ngFor="let status of paymentStatuses" [value]="status">{{ status }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-4 mt-8">
+                <button (click)="cancelForm()" class="border border-gray-300 text-gray-600 px-5 py-3 rounded-lg hover:bg-gray-100">
+                    Cancel
+                </button>
+
+                <button (click)="saveBill()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>

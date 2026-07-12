@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260707060829_CreateBillsTableCorrectly")]
+    partial class CreateBillsTableCorrectly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,33 +51,6 @@ namespace api.Migrations
                     b.HasIndex("AppointmentId");
 
                     b.ToTable("Bills");
-                });
-
-            modelBuilder.Entity("Medicine", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Medicines");
                 });
 
             modelBuilder.Entity("api.Models.Appointment", b =>

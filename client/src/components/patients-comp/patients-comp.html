@@ -1,111 +1,154 @@
 <div class="mx-[3%] mt-[2%]">
 
-    <!-- Header -->
-    <div class="flex justify-between items-center">
+    <div *ngIf="!isAdding() && !isEditing()">
+        <!-- Header -->
+        <div class="flex justify-between items-center">
 
+            <div>
+                <h1 class="text-3xl font-semibold">Patients</h1>
+                <p class="text-gray-500 mt-2">
+                    Search, add, edit, and manage patient records.
+                </p>
+            </div>
+
+            <button
+                *ngIf="canManage()"
+                (click)="addPatient()"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
+                <i class="fa-solid fa-plus mr-2"></i>
+                Add Patient
+            </button>
+
+        </div>
+
+        <!-- Search Bar  -->
+        <div class="relative w-96 mt-8">
+
+            <input
+                type="text"
+                placeholder="Search patients..."
+                class="w-full border border-gray-300 rounded-lg py-3 pl-10 pr-4 outline-none focus:ring-2 focus:ring-blue-500">
+
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+
+        </div>
+
+        <!-- Patients List -->
+        <div class="bg-white rounded-xl shadow mt-8 overflow-hidden">
+
+            <!-- Heading Row -->
+            <div class="grid grid-cols-6 px-6 py-4 font-semibold border-b border-gray-300 text-gray-600 bg-white">
+
+                <div>ID</div>
+                <div>Name</div>
+                <div>Gender</div>
+                <div>Phone</div>
+                <div>Age</div>
+                <div class="text-center">Actions</div>
+
+            </div>
+
+            <!-- Data Rows -->
+            <div class="max-h-[65vh] overflow-y-auto">
+                <div
+                    *ngFor="let patient of patients()"
+                    class="grid grid-cols-6 px-6 py-5 border-b border-gray-200 items-center hover:bg-gray-50">
+
+                    <div>
+                        P{{ patient.id }}
+                    </div>
+
+                    <div>
+                        {{ patient.name }}
+                    </div>
+
+                    <div>
+                        {{ patient.gender }}
+                    </div>
+
+                    <div>
+                        {{ patient.phone }}
+                    </div>
+
+                    <div>
+                        {{ patient.age }}
+                    </div>
+
+                    <div class="flex justify-center gap-5">
+
+                        <button *ngIf="canManage()" (click)="editPatient(patient)" class="text-blue-600 hover:text-blue-800">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        <button *ngIf="canManage()" (click)="deletePatient(patient.id)" class="text-red-500 hover:text-red-700">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer / Pagination -->
+        <div class="flex justify-between items-center mt-4 text-gray-500 text-sm">
+
+            <p>
+                Showing 1 to {{ patients().length }} of {{ patients().length }} entries
+            </p>
+
+            
+
+        </div>
+    </div>
+
+    <div *ngIf="isAdding() || isEditing()">
         <div>
-            <h1 class="text-3xl font-semibold">Patients</h1>
+            <h1 class="text-3xl font-semibold">{{ isAdding() ? 'Add Patient' : 'Edit Patient' }}</h1>
             <p class="text-gray-500 mt-2">
-                Search, add, edit, and manage patient records.
+                {{ isAdding() ? 'Create patient record.' : 'Update patient record.' }}
             </p>
         </div>
 
-        <button
-            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
-            <i class="fa-solid fa-plus mr-2"></i>
-            Add Patient
-        </button>
+        <div class="bg-white rounded-xl shadow mt-8 p-6">
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-gray-600 mb-2">Name</label>
+                    <input type="text" [(ngModel)]="selectedPatient.name" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
 
-    </div>
+                <div>
+                    <label class="block text-gray-600 mb-2">Age</label>
+                    <input type="number" [(ngModel)]="selectedPatient.age" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
 
-    <!-- Search -->
-    <div class="relative w-96 mt-8">
+                <div>
+                    <label class="block text-gray-600 mb-2">Gender</label>
+                    <input type="text" [(ngModel)]="selectedPatient.gender" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
 
-        <input
-            type="text"
-            placeholder="Search patients..."
-            class="w-full border border-gray-300 rounded-lg py-3 pl-10 pr-4 outline-none focus:ring-2 focus:ring-blue-500">
+                <div>
+                    <label class="block text-gray-600 mb-2">Phone</label>
+                    <input type="text" [(ngModel)]="selectedPatient.phone" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
 
-        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-
-    </div>
-
-    <!-- Patients List -->
-    <div class="bg-white rounded-xl shadow mt-8 overflow-hidden">
-
-        <!-- Heading Row -->
-        <div class="grid grid-cols-6 px-6 py-4 font-semibold border-b border-gray-300 text-gray-600 bg-white">
-
-            <div>ID</div>
-            <div>Name</div>
-            <div>Gender</div>
-            <div>Phone</div>
-            <div>Age</div>
-            <div class="text-center">Actions</div>
-
-        </div>
-
-        <!-- Data Rows -->
-        <div
-            *ngFor="let patient of patients()"
-            class="grid grid-cols-6 px-6 py-5 border-b border-gray-200 items-center hover:bg-gray-50">
-
-            <div>
-                P{{ patient.id }}
+                <div>
+                    <label class="block text-gray-600 mb-2">Disease</label>
+                    <input type="text" [(ngModel)]="selectedPatient.disease" class="w-full border border-gray-300 rounded-lg py-3 px-4 outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
             </div>
 
-            <div>
-                {{ patient.name }}
-            </div>
-
-            <div>
-                {{ patient.gender }}
-            </div>
-
-            <div>
-                {{ patient.phone }}
-            </div>
-
-            <div>
-                {{ patient.age }}
-            </div>
-
-            <div class="flex justify-center gap-5">
-
-                <button class="text-blue-500 hover:text-blue-700">
-                    <i class="fa-solid fa-eye"></i>
+            <div class="flex justify-end gap-4 mt-8">
+                <button (click)="cancelForm()" class="border border-gray-300 text-gray-600 px-5 py-3 rounded-lg hover:bg-gray-100">
+                    Cancel
                 </button>
 
-                <button class="text-blue-600 hover:text-blue-800">
-                    <i class="fa-solid fa-pen"></i>
+                <button (click)="savePatient()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
+                    Save
                 </button>
-
-                <button class="text-red-500 hover:text-red-700">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-
             </div>
-
         </div>
-
-    </div>
-
-    <!-- Footer / Pagination -->
-    <div class="flex justify-between items-center mt-4 text-gray-500 text-sm">
-
-        <p>
-            Showing 1 to {{ patients().length }} of {{ patients().length }} entries
-        </p>
-
-        <div class="flex gap-2">
-            <button class="px-3 py-2 border rounded hover:bg-gray-100">1</button>
-            <button class="px-3 py-2 border rounded hover:bg-gray-100">2</button>
-            <button class="px-3 py-2 border rounded hover:bg-gray-100">3</button>
-            <button class="px-3 py-2 border rounded hover:bg-gray-100">
-                <i class="fa-solid fa-angle-right"></i>
-            </button>
-        </div>
-
     </div>
 
 </div>
