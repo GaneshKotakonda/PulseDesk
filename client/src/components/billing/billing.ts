@@ -2,6 +2,7 @@ import { NgClass, NgFor, DatePipe, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-billing',
@@ -38,7 +39,7 @@ export class Billing {
   }
 
   getBills() {
-    this.http.get<any[]>('http://localhost:5132/api/Bill')
+    this.http.get<any[]>(`${environment.apiUrl}/Bill`)
       .subscribe({
         next: (data) => {
           this.bills.set(data);
@@ -50,7 +51,7 @@ export class Billing {
   }
 
   getAppointments() {
-    this.http.get<any[]>('http://localhost:5132/api/appointments')
+    this.http.get<any[]>(`${environment.apiUrl}/appointments`)
       .subscribe({
         next: (data) => {
           this.appointments.set(data);
@@ -102,8 +103,8 @@ export class Billing {
     };
 
     const request = this.isAdding()
-      ? this.http.post<any>('http://localhost:5132/api/Bill', payload)
-      : this.http.put<any>(`http://localhost:5132/api/Bill/${this.selectedBill.id}`, payload);
+      ? this.http.post<any>(`${environment.apiUrl}/Bill`, payload)
+      : this.http.put<any>(`${environment.apiUrl}/Bill/${this.selectedBill.id}`, payload);
 
     request.subscribe({
       next: () => {
@@ -122,7 +123,7 @@ export class Billing {
       return;
     }
 
-    this.http.delete(`http://localhost:5132/api/Bill/${id}`).subscribe({
+    this.http.delete(`${environment.apiUrl}/Bill/${id}`).subscribe({
       next: () => {
         this.getBills();
       },

@@ -2,6 +2,7 @@ import { NgFor, NgIf, DatePipe, NgClass } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-appointment-comp',
@@ -45,7 +46,7 @@ export class AppointmentComp {
   }
 
   getAppointments() {
-    this.http.get<any[]>('http://localhost:5132/api/appointments')
+    this.http.get<any[]>(`${environment.apiUrl}/appointments`)
       .subscribe({
         next: (data) => {
           data.sort((a, b) => {
@@ -61,7 +62,7 @@ export class AppointmentComp {
   }
 
   getPatients() {
-    this.http.get<any[]>('http://localhost:5132/api/patients')
+    this.http.get<any[]>(`${environment.apiUrl}/patients`)
       .subscribe({
         next: (data) => this.patients.set(data),
         error: (err) => console.log('Patients dropdown error:', err)
@@ -69,7 +70,7 @@ export class AppointmentComp {
   }
 
   getDoctors() {
-    this.http.get<any[]>('http://localhost:5132/api/doctors')
+    this.http.get<any[]>(`${environment.apiUrl}/doctors`)
       .subscribe({
         next: (data) => this.doctors.set(data),
         error: (err) => console.log('Doctors dropdown error:', err)
@@ -129,8 +130,8 @@ export class AppointmentComp {
     };
 
     const request = this.isAdding()
-      ? this.http.post<any>('http://localhost:5132/api/appointments', payload)
-      : this.http.put<any>(`http://localhost:5132/api/appointments/${this.selectedAppointment.id}`, payload);
+      ? this.http.post<any>(`${environment.apiUrl}/appointments`, payload)
+      : this.http.put<any>(`${environment.apiUrl}/appointments/${this.selectedAppointment.id}`, payload);
 
     request.subscribe({
       next: () => {
@@ -150,7 +151,7 @@ export class AppointmentComp {
       return;
     }
 
-    this.http.delete(`http://localhost:5132/api/appointments/${id}`).subscribe({
+    this.http.delete(`${environment.apiUrl}/appointments/${id}`).subscribe({
       next: () => this.getAppointments(),
       error: (err) => console.log('Appointment delete error:', err)
     });

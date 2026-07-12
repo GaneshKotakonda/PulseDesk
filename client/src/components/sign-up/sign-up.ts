@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { firstValueFrom } from 'rxjs';
 import { auth } from '../../app/firebase';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-sign-up',
@@ -25,7 +26,7 @@ export class SignUp {
       await createUserWithEmailAndPassword(auth, this.email, this.password);
 
       const appUser: any = await firstValueFrom(
-        this.http.post('http://localhost:5132/api/users', {
+        this.http.post(`${environment.apiUrl}/users`, {
           fullName: this.name,
           email: this.email,
           phoneNumber: String(this.phone),

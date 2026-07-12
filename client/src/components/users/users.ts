@@ -2,6 +2,7 @@ import { NgClass, NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-users',
@@ -34,7 +35,7 @@ export class Users {
   }
 
   getUsers() {
-    this.http.get<any[]>('http://localhost:5132/api/users')
+    this.http.get<any[]>(`${environment.apiUrl}/users`)
       .subscribe({
         next: (data) => {
           this.users.set(data);
@@ -80,8 +81,8 @@ export class Users {
     }
 
     const request = this.isAdding()
-      ? this.http.post<any>('http://localhost:5132/api/users', this.selectedUser)
-      : this.http.put<any>(`http://localhost:5132/api/users/${this.selectedUser.id}`, this.selectedUser);
+      ? this.http.post<any>(`${environment.apiUrl}/users`, this.selectedUser)
+      : this.http.put<any>(`${environment.apiUrl}/users/${this.selectedUser.id}`, this.selectedUser);
 
     request
       .subscribe({
@@ -102,7 +103,7 @@ export class Users {
       return;
     }
 
-    this.http.delete(`http://localhost:5132/api/users/${id}`)
+    this.http.delete(`${environment.apiUrl}/users/${id}`)
       .subscribe({
         next: () => {
           this.getUsers();

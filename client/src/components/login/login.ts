@@ -5,6 +5,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../app/firebase';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 
 @Component({
@@ -43,12 +44,12 @@ export class Login {
   private async ensureUserProfile(): Promise<any> {
     try {
       return await firstValueFrom(
-        this.http.get(`http://localhost:5132/api/users/email/${encodeURIComponent(this.email)}`)
+        this.http.get(`${environment.apiUrl}/users/email/${encodeURIComponent(this.email)}`)
       );
     } catch (error) {
       if (error instanceof HttpErrorResponse && error.status === 404) {
         return await firstValueFrom(
-          this.http.post('http://localhost:5132/api/users', {
+          this.http.post(`${environment.apiUrl}/users`, {
             fullName: this.email.split('@')[0],
             email: this.email,
             phoneNumber: '',

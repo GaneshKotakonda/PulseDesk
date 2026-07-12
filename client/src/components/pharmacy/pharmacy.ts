@@ -2,6 +2,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../environments/environment';
 
 interface Medicine {
   id: number;
@@ -45,7 +46,7 @@ export class Pharmacy {
 
   getMedicines() {
     this.isLoading.set(true);
-    this.http.get<Medicine[]>('http://localhost:5132/api/medicines')
+    this.http.get<Medicine[]>(`${environment.apiUrl}/medicines`)
       .subscribe({
         next: (data) => {
           this.medicines.set(data);
@@ -95,8 +96,8 @@ export class Pharmacy {
     };
 
     const request = this.isAdding()
-      ? this.http.post<any>('http://localhost:5132/api/medicines', payload)
-      : this.http.put<any>(`http://localhost:5132/api/medicines/${this.selectedMedicine.id}`, payload);
+      ? this.http.post<any>(`${environment.apiUrl}/medicines`, payload)
+      : this.http.put<any>(`${environment.apiUrl}/medicines/${this.selectedMedicine.id}`, payload);
 
     request.subscribe({
       next: () => {
@@ -115,7 +116,7 @@ export class Pharmacy {
       return;
     }
 
-    this.http.delete(`http://localhost:5132/api/medicines/${id}`).subscribe({
+    this.http.delete(`${environment.apiUrl}/medicines/${id}`).subscribe({
       next: () => {
         this.getMedicines();
       },

@@ -12,6 +12,7 @@ import { AppointmentComp } from '../appointment-comp/appointment-comp';
 import { Billing } from '../billing/billing';
 import { Pharmacy } from '../pharmacy/pharmacy';
 import { Users } from '../users/users';
+import { environment } from '../../environments/environment';
 
 
 @Component({
@@ -52,7 +53,7 @@ ngAfterViewInit() {
 }
 ngOnInit(){
 //recent appointments
-    this.http.get<any[]>('http://localhost:5132/api/appointments/recent')
+    this.http.get<any[]>(`${environment.apiUrl}/appointments/recent`)
     .subscribe({
       next: data=>{
         this.recentAppointments.set(data);
@@ -62,7 +63,7 @@ ngOnInit(){
       }
     });
 //doctors count
- this.http.get<number>('http://localhost:5132/api/doctors/count')
+ this.http.get<number>(`${environment.apiUrl}/doctors/count`)
 .subscribe({
   next:(count)=>{
     
@@ -76,7 +77,7 @@ console.log(err);
     }
 });
 //appointments count;
-this.http.get<number>('http://localhost:5132/api/appointments/count')
+this.http.get<number>(`${environment.apiUrl}/appointments/count`)
 .subscribe({
   next:(count)=>{
     this.AppointmentCount.set(count);
@@ -88,7 +89,7 @@ console.log(err);
     }
 });
 //patients count;
-this.http.get<number>('http://localhost:5132/api/patients/count')
+this.http.get<number>(`${environment.apiUrl}/patients/count`)
 .subscribe({ 
     next: (count:any)=>{
                 console.log('Patient count:', count);
@@ -102,7 +103,7 @@ console.log(err);
 }
 
 getAppointmentChartData() {
-  this.http.get<any[]>('http://localhost:5132/api/appointments')
+  this.http.get<any[]>(`${environment.apiUrl}/appointments`)
     .subscribe({
       next: (appointments) => {
         const days = this.getLastSevenDays();

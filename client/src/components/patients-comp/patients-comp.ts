@@ -2,6 +2,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-patients-comp',
@@ -35,7 +36,7 @@ export class PatientsComp {
   }
 
   getPatients() {
-    this.http.get<any[]>('http://localhost:5132/api/patients').subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/patients`).subscribe({
       next: (data) => {
         this.patients.set(data);
       },
@@ -75,8 +76,8 @@ export class PatientsComp {
     }
 
     const request = this.isAdding()
-      ? this.http.post<any>('http://localhost:5132/api/patients', this.selectedPatient)
-      : this.http.put<any>(`http://localhost:5132/api/patients/${this.selectedPatient.id}`, this.selectedPatient);
+      ? this.http.post<any>(`${environment.apiUrl}/patients`, this.selectedPatient)
+      : this.http.put<any>(`${environment.apiUrl}/patients/${this.selectedPatient.id}`, this.selectedPatient);
 
     request.subscribe({
       next: () => {
@@ -95,7 +96,7 @@ export class PatientsComp {
       return;
     }
 
-    this.http.delete(`http://localhost:5132/api/patients/${id}`).subscribe({
+    this.http.delete(`${environment.apiUrl}/patients/${id}`).subscribe({
       next: () => {
         this.getPatients();
       },
